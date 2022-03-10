@@ -246,21 +246,22 @@ Check for more:
 - https://angular.io/api/router/CanLoad
 </details>
 
-### Architectural Patterns
-1. MVC vs WebApi
+### Backend Architecture
+1. Lack of unified architecture
+2. Unstandardised solutions used without documentation.
+3. Lack of standardised specification for routes. (REST, GraphQL, CRUD)
 
-2. Repository Pattern
-
-3. Aggregates
-
-### REST and CRUD
 ### ORM and Stored Procedures
+1. SQL Project used instead of ORM - SQL Projects are under huge risk of being deprecated and many developers more famillar with Entity Framework and Code First appraoch which is used for years.
+2. Most of developers this days don't develop SQL skills as it's legacy techology so it may generate problems with finding resources to maintain the project.
+3. Relation Database is very uncommon approach for products like ILR. Where the data structure flexiblity is the key. Where writes and reads are equal or even reads are smaller.
 
 ## Dependencies
 ### Components Framework
 ### CSS Framework
 ![Maintainablity](https://img.shields.io/badge/Maintainablity-1.svg)
 ![Accessiblity](https://img.shields.io/badge/Accessiblity-gray.svg)
+ILR has added Boostrap but most of the code don't actually use it, instead we have a mess with many custom classes. 
 
 ## Quality and Performance
 ### Forms
