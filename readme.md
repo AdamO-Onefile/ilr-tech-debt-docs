@@ -246,22 +246,48 @@ Check for more:
 - https://angular.io/api/router/CanLoad
 </details>
 
-### Backend Architecture
-1. Lack of unified architecture
-2. Unstandardised solutions used without documentation.
-3. Lack of standardised specification for routes. (REST, GraphQL, CRUD)
+### Backend Implementation
+![Maintainablity](https://img.shields.io/badge/Maintainablity-grey.svg)
 
-### ORM and Stored Procedures
-1. SQL Project used instead of ORM - SQL Projects are under huge risk of being deprecated and many developers more famillar with Entity Framework and Code First appraoch which is used for years.
-2. Most of developers this days don't develop SQL skills as it's legacy techology so it may generate problems with finding resources to maintain the project.
-3. Relation Database is very uncommon approach for products like ILR. Where the data structure flexiblity is the key. Where writes and reads are equal or even reads are smaller.
+Problems:
+- The complexity of current backend implementation.
+   1. To many abstraction layers. Controller -> Service -> Fetcher -> DataCollector -> DataAccess -> Database.
+   2. Where the dependencies are point downwards they are crossing everywhere, lack of proper SoC. There is no control over that by the code itself (`Encapsulation`).
+   3. Lack of usage of the the domain entities. 
+   4. Dependency Injection is only partiald used which adds complexity and creates unpredictable situations.
+- Background Processors - this is not implemented with according to .NET guides, another custom undocumented implementation.
+- Memory Cache - this is another bit which is custom and undocumented within the code.
+- Configuration provider is overcomplicated where .NET provides tools to handle out of the box.
+- SQL builder - untested and undocumented homemade ORM system. Huge risk, better not to use, and deprecate as soon as possible.
+- Web API has no any common convention followed, like REST/GraphQL/CRUD.
+- Lack of observability on the system. Logging and Health Checks.
+- Most of the unit tests are coupled together by generic factory providers which makes them very hard to maintain.
+
+### SQL and Stored Procedures
+![Reliability](https://img.shields.io/badge/Reliability-grey.svg)
+
+- As SQL is just a data storage it should not contain any business rules but it often has which makes it really hard to test.
 
 ## Dependencies
 ### Components Framework
+![Maintainablity](https://img.shields.io/badge/Maintainablity-1.svg)
+
+ILR has more than one component framework used. Actually it has 3.
+- ngBootstrap
+- Material
+- OneFile Component Library (Rapid)
+
+That makes project hard to maintain and creates confusing scenarios where developers not sure which component should be used to develop features. We may want to use many third party libraries but components should not duplicate.
+
+Solution: Decide and refactor the code to stick to the one of this frameworks. I would suggest to stop using ngBootstrap as it's deprecated.
+
 ### CSS Framework
 ![Maintainablity](https://img.shields.io/badge/Maintainablity-1.svg)
 ![Accessiblity](https://img.shields.io/badge/Accessiblity-gray.svg)
-ILR has added Boostrap but most of the code don't actually use it, instead we have a mess with many custom classes. 
+
+ILR has a Bootstrap as dependency but most of the code don't actually use it, instead we have a mess with many custom classes. 
+
+Solution: Reduce amount of custom SCSS classes used and sick to the bootstrap or use OneFile Component Library to handle spacings.
 
 ## Quality and Performance
 ### Forms
@@ -418,7 +444,10 @@ https://angular.io/api/core/ChangeDetectionStrategy
 </details> 
 
 
-### State Managment
+### Lack of State Management 
+![Reliability](https://img.shields.io/badge/Reliability-1.svg)
+![Maintainablity](https://img.shields.io/badge/Maintainablity-grey.svg)
+
 
 ### Pixels vs Rems 
 ![Performance](https://img.shields.io/badge/Accessibility-1.svg)
@@ -431,102 +460,21 @@ Solution: Replace all `px` units with `rems`.
 ![Maintainablity](https://img.shields.io/badge/Maintainablity-grey.svg)
 ![Performance](https://img.shields.io/badge/Performance-grey.svg)
 
-Some of HTML templates are overcomplicated. As we all know DOM tree is quite heavy and unoptimized templates are not a good friend in terms of application speed.
+Some of HTML templates are overcomplicated. As we all know DOM tree is quite heavy and optimized templates are not a good friend in terms of application speed.
 
-<details>
-<summary>Show solution</summary>
+Solution:
 Optimize HTML templates by moving all code responsible for styling to CSS and keeping them as clean as they can be.
 
-```html
-<!-- simplified learner-information.component.html -->
-<fetching-data-spinner></fetching-data-spinner>
-
-<div *ngIf="dataLoaded">
-    <h1></h1>
-    <div> <!-- unnused div -->
-        <t-drk Text="Learner information"></t-drk>
-        <div class="figma-standard-double-spacer"></div> <!-- spacing div element -->
-        <t-drk Text="Fill in your learner’s personal information and learning details."></t-drk>
-        <div class="figma-standard-quad-spacer"></div> <!-- spacing div element -->
-        <div class="figma-standard-line-thin-full-lgt"></div> <!-- spacing div element -->
-        <div *ngFor="let groupedField of getFilteredLearnerInformationGroups()"> <!-- replace by ng-container -->
-            <div class="figma-standard-quad-spacer"></div> <!-- spacing div element -->
-            <t-drk  *ngIf="groupedField.group === 1" Text="Personal information"></t-drk>
-            <t-drk  *ngIf="groupedField.group === 2" Text="Current address"></t-drk>
-            <t-drk  *ngIf="groupedField.group === 3" Text="Contact preferences"></t-drk>
-            <t-drk  *ngIf="groupedField.group === 4" Text="Learning details"></t-drk>
-            <div class="figma-standard-full-spacer"></div> <!-- spacing div element -->
-            <div *ngFor="let field of groupedField.fieldDefinition"> <!-- replace by ng-container -->
-                <div [ngSwitch]="field.typeId" *ngIf="groupedField.group != 3"> <!-- replace by ng-container -->
-                    <div *ngSwitchCase="fieldType.Int"> <!-- can be applied to element directly -->
-                        <field-definition-textbox></field-definition-textbox>
-                    </div>
-                    <div *ngSwitchCase="fieldType.Long"> <!-- can be applied to element directly -->
-                        <field-definition-textbox></field-definition-textbox>
-                    </div>
-                    <div *ngSwitchCase="fieldType.Date"> <!-- can be applied to element directly -->
-                        <field-definition-datepicker></field-definition-datepicker>
-                    </div>
-                    <div *ngSwitchCase="fieldType.String"> <!-- can be applied to element directly -->
-                        <field-definition-textbox></field-definition-textbox>
-                    </div>
-                    <div *ngSwitchCase="fieldType.Dropdown"> <!-- can be applied to element directly -->
-                        <field-definition-dropdown></field-definition-dropdown>
-                    </div>
-                </div>
-            </div>
-            <contact-preference></contact-preference>
-        </div>
-    </div>
-</div>
-```
-and the simplified version:
-```html
-<!-- simplified -->
-<fetching-data-spinner></fetching-data-spinner>
-<ng-container *ngIf="dataLoaded">
-    <h1></h1>
-    <t-drk Text="Learner information"></t-drk>
-    <t-drk Text="Fill in your learner’s personal information and learning details."></t-drk>
-    <div *ngFor="let groupedField of getFilteredLearnerInformationGroups()">
-        <t-drk  *ngIf="groupedField.group === 1" Text="Personal information"></t-drk>
-        <t-drk  *ngIf="groupedField.group === 2" Text="Current address"></t-drk>
-        <t-drk  *ngIf="groupedField.group === 3" Text="Contact preferences"></t-drk>
-        <t-drk  *ngIf="groupedField.group === 4" Text="Learning details"></t-drk>
-        <ng-container *ngFor="let field of groupedField.fieldDefinition">
-            <ng-container [ngSwitch]="field.typeId" *ngIf="groupedField.group != 3">
-                <field-definition-textbox *ngSwitchCase="fieldType.Int"></field-definition-textbox>
-                <field-definition-textbox *ngSwitchCase="fieldType.Long"></field-definition-textbox>
-                <field-definition-datepicker *ngSwitchCase="fieldType.Date"></field-definition-datepicker>
-                <field-definition-textbox  *ngSwitchCase="fieldType.String"></field-definition-textbox>
-                <field-definition-dropdown *ngSwitchCase="fieldType.Dropdown"></field-definition-dropdown>
-            </ng-container>
-        </ng-container>
-        <contact-preference></contact-preference>
-    </div>
-</ng-container>
-```
-Using `<ng-container>` instead of `<div>` will keep the DOM tree to be very minimal after compilation.
-By removing elements responsible for spacing and letting typograpy and container element handle that will help them to be very clean. It's maybe not a huge imporvement but by appling some simple rules we can reduce amount of code in project by `~40%` which is a lot of time saved for maintenance.
-</details>
-
-### Unorganised Styles
-### Redundand Wrappers
+### Unorganized Styles
+### Redundant Wrappers
 ### Developer tools mixed with production code
-### Unused Dependency Injection
-### Fake Unit Testing
 ### Lack of Unit Testing
-### Lack of Logging
 
 ## Configuration
 ### Secrets
 
 ## Deployment
 ### Pipelines
-### Docker
-
-## Others
-### Authentication
 
 ## Teminology
 - SOLID - Single Responsiblity, Open Closed, Liskov Substitution, Interface Segregation, Dependency Inversion
