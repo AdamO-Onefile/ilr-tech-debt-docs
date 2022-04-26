@@ -44,6 +44,14 @@ Problems:
 
 Solution: [Angular routing](angular-routing.md)
 
+### Build configurations for Beta and Production environment.
+![Reliability](https://img.shields.io/badge/Reliability-gray.svg)
+
+This could make releases unpredictable and forces to rebuild each time we want to release to a different environment.
+
+Solution:
+- make sure we use the same build for BETA and LIVE by removing `.environment.ts` files
+- move all feature flags to be server side controlled.
 
 ### Components Framework
 ![Maintainablity](https://img.shields.io/badge/Maintainablity-1.svg)
