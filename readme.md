@@ -30,6 +30,8 @@ Problems:
 - Application bundle size - we need to load etrie app when user access to our application.
 - Fragility - Resistance of refactoring due to high regression risk.
 
+Solution: [Angular modules](angular-modules.md)
+
 ### Angular Routing
 ![Performance](https://img.shields.io/badge/Performance-1.svg)
 ![Maintainablity](https://img.shields.io/badge/Maintainablity-grey.svg)
@@ -40,7 +42,7 @@ Problems:
 - Route tree is flat which means that child route will never know about parent existance, core conceptual problem.
 - Top level module holds information about low level modules routing and configuration.
 
-
+Solution: [Angular routing](angular-routing.md)
 
 
 ### Components Framework
@@ -77,12 +79,14 @@ Problems:
 - `Lava flow` - plenty unused code, left in a fear of breaking the system.
 - Lack of custom solution documentation.
 
-
+Solution: [Modules](angular-forms.md)
 
 ### Input Binding Function Executions
 ![Performance](https://img.shields.io/badge/Performance-1.svg)
 
 Using function invocation as an input in .HTML templates should be considered as a bad practice, when component change detection is set to default it will cause huge performance issues. This happens almost everywhere across the project.
+
+Solution: [Input binding](angular-input-binding.md)
 
 ### Lack of State Management 
 ![Reliability](https://img.shields.io/badge/Reliability-1.svg)
