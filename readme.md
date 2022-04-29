@@ -157,6 +157,12 @@ Problems:
 - SQL builder - untested and undocumented homemade ORM system. Huge risk, better not to use, and deprecate as soon as possible.
 - Web API has no any common convention followed, like REST/GraphQL/CRUD.
 
+### Dependency Injection not used properly
+![Security](https://img.shields.io/badge/Security-green.svg)
+Some of DataCollectors, Fetcher and Services don't use proper injection scope. So they provided as singletones when shoudn't be, this leads developer to set the ProviderId manually to handle access to resources. Which leads to data compromise problems if not used carefully and creates accidental complexity.
+
+Solution: Review services scopes and make sure that services are instantiated per requests.
+
 ### Observability and Monitoring
 ![Reliability](https://img.shields.io/badge/Reliability-grey.svg)
 ![Security](https://img.shields.io/badge/Security-grey.svg)
