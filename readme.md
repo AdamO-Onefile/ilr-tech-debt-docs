@@ -126,6 +126,12 @@ Optimize HTML templates by moving all code responsible for styling to CSS and ke
 ### Unorganized Styles
 Messy stylesheets.
 
+### Timeouted keyboard actions
+There is a bunch 37 actions in the project that have separate method for keyboard trigger.
+Each of this method has a timer that executes normal action with delay. This is completly unnecessary complexity.
+
+Solution: Find what drives this weird solution and fix real problem. Remove all redundand methods.
+
 ### Lack of Unit Testing
 Lack of unit testing on frontend app. If we want to write good maintainable and reusable code we need to learn how to do it. No matter if it's the backend or frontend.
 
