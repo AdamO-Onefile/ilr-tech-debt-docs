@@ -175,6 +175,13 @@ Solution:
 - add middleware to handle unhandled exception and report it.
 - add a health check/s.
 
+### Unused code leftover
+There is a lot of code left over which is not in use anymore:
+
+- unused Learner statuses (AchievedPending, WithdrawnPending, Draft)
+
+Solution: Remove all code responsible for handling those
+
 ### Secrets
 ![Security](https://img.shields.io/badge/Security-success.svg)
 Secrets are exposed to everyone who can read repo.
